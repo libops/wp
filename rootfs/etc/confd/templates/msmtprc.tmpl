@@ -1,0 +1,13 @@
+defaults
+auth off
+tls off
+syslog on
+
+account default
+host host.docker.internal
+port 25
+{{- if ne (getenv "SMTP_FROM") "" }}
+from {{ getenv "SMTP_FROM" }}
+{{- else }}
+from info@{{ replace (getenv "DOMAIN") "www." "" -1 }}
+{{- end }}

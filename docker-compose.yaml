@@ -1,0 +1,98 @@
+---
+networks:
+  default:
+volumes:
+  mariadb-data: {}
+  wordpress-uploads: {}
+
+secrets:
+  DB_ROOT_PASSWORD:
+    file: ./secrets/DB_ROOT_PASSWORD
+  WORDPRESS_DB_PASSWORD:
+    file: ./secrets/WORDPRESS_DB_PASSWORD
+  WORDPRESS_ADMIN_PASSWORD:
+    file: ./secrets/WORDPRESS_ADMIN_PASSWORD
+  WORDPRESS_AUTH_KEY:
+    file: ./secrets/WORDPRESS_AUTH_KEY
+  WORDPRESS_SECURE_AUTH_KEY:
+    file: ./secrets/WORDPRESS_SECURE_AUTH_KEY
+  WORDPRESS_LOGGED_IN_KEY:
+    file: ./secrets/WORDPRESS_LOGGED_IN_KEY
+  WORDPRESS_NONCE_KEY:
+    file: ./secrets/WORDPRESS_NONCE_KEY
+  WORDPRESS_AUTH_SALT:
+    file: ./secrets/WORDPRESS_AUTH_SALT
+  WORDPRESS_SECURE_AUTH_SALT:
+    file: ./secrets/WORDPRESS_SECURE_AUTH_SALT
+  WORDPRESS_LOGGED_IN_SALT:
+    file: ./secrets/WORDPRESS_LOGGED_IN_SALT
+  WORDPRESS_NONCE_SALT:
+    file: ./secrets/WORDPRESS_NONCE_SALT
+
+services:
+  traefik:
+    image: traefik:v3.6.13
+    restart: unless-stopped
+    command:
+      - --providers.file.filename=/etc/traefik/dynamic/wordpress.yml
+      - --providers.file.watch=true
+      - --entrypoints.web.address=:80
+    environment:
+      DOMAIN: "${DOMAIN:-localhost}"
+      TRAEFIK_TLS_ENABLED: "false"
+    ports:
+      - 80:80
+    volumes:
+      - ./conf/traefik/wordpress.tmpl:/etc/traefik/dynamic/wordpress.yml:ro
+    networks:
+      - default
+
+  init:
+    image: islandora/base:6.2.3@sha256:010f7e422ad4563f91335106215a72c7485635b0a1125c651b4e76cb6d7efbd4
+    restart: no
+    working_dir: /var/www/bedrock
+    volumes:
+      - ./:/var/www/bedrock:rw
+    command: /var/www/bedrock/scripts/generate-secrets.sh
+    profiles: [none]
+
+  wp:
+    image: ghcr.io/libops/wordpress-bedrock:main
+    build: .
+    networks:
+      - default
+    working_dir: /var/www/bedrock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DOMAIN: "${DOMAIN:-localhost}"
+      WORDPRESS_ENABLE_HTTPS: "false"
+      WORDPRESS_HOME: "http://${DOMAIN:-localhost}"
+      WORDPRESS_SITEURL: "http://${DOMAIN:-localhost}/wp"
+    secrets:
+      - source: DB_ROOT_PASSWORD
+      - source: WORDPRESS_AUTH_KEY
+      - source: WORDPRESS_SECURE_AUTH_KEY
+      - source: WORDPRESS_LOGGED_IN_KEY
+      - source: WORDPRESS_NONCE_KEY
+      - source: WORDPRESS_AUTH_SALT
+      - source: WORDPRESS_SECURE_AUTH_SALT
+      - source: WORDPRESS_LOGGED_IN_SALT
+      - source: WORDPRESS_NONCE_SALT
+      - source: WORDPRESS_DB_PASSWORD
+        target: DB_PASSWORD
+      - source: WORDPRESS_ADMIN_PASSWORD
+    volumes:
+      - wordpress-uploads:/var/www/bedrock/web/app/uploads:rw
+    depends_on:
+      mariadb:
+        condition: service_started
+
+  mariadb:
+    image: islandora/mariadb:6.2.3@sha256:3c6e7cbed734310f4d9fea7a4f08e7e282ecb1a5e73aec0ab79b4167930380ab
+    networks:
+      - default
+    volumes:
+      - mariadb-data:/var/lib/mysql:rw
+    secrets:
+      - source: DB_ROOT_PASSWORD

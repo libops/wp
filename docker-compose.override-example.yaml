@@ -1,0 +1,12 @@
+services:
+  wp:
+    volumes:
+      - ./:/var/www/bedrock:rw
+  mariadb:
+    ports:
+      - 3306:3306
+  mailpit:
+    image: axllent/mailpit:v1.26
+    ports:
+      - 1025:1025
+      - 8025:8025
