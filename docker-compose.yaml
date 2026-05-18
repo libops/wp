@@ -1,0 +1,116 @@
+---
+x-common: &common
+  restart: unless-stopped
+  networks:
+    default:
+
+networks:
+  default:
+volumes:
+  acme-data: {}
+  mariadb-data: {}
+  wordpress-uploads: {}
+
+secrets:
+  DB_ROOT_PASSWORD:
+    file: ./secrets/DB_ROOT_PASSWORD
+  WORDPRESS_DB_PASSWORD:
+    file: ./secrets/WORDPRESS_DB_PASSWORD
+  WORDPRESS_ADMIN_PASSWORD:
+    file: ./secrets/WORDPRESS_ADMIN_PASSWORD
+  WORDPRESS_AUTH_KEY:
+    file: ./secrets/WORDPRESS_AUTH_KEY
+  WORDPRESS_SECURE_AUTH_KEY:
+    file: ./secrets/WORDPRESS_SECURE_AUTH_KEY
+  WORDPRESS_LOGGED_IN_KEY:
+    file: ./secrets/WORDPRESS_LOGGED_IN_KEY
+  WORDPRESS_NONCE_KEY:
+    file: ./secrets/WORDPRESS_NONCE_KEY
+  WORDPRESS_AUTH_SALT:
+    file: ./secrets/WORDPRESS_AUTH_SALT
+  WORDPRESS_SECURE_AUTH_SALT:
+    file: ./secrets/WORDPRESS_SECURE_AUTH_SALT
+  WORDPRESS_LOGGED_IN_SALT:
+    file: ./secrets/WORDPRESS_LOGGED_IN_SALT
+  WORDPRESS_NONCE_SALT:
+    file: ./secrets/WORDPRESS_NONCE_SALT
+
+services:
+  traefik:
+    <<: *common
+    image: traefik:v3.6.13@sha256:34d5089d0b414945342848518b383f11f5b3a645504ed87b77ffeb9d683d0e48
+    command:
+      - --providers.file.filename=/etc/traefik/dynamic/wordpress.yml
+      - --providers.file.watch=true
+      - --entrypoints.web.address=:80
+    environment:
+      DOMAIN: "${DOMAIN:-localhost}"
+      TRAEFIK_TLS_ENABLED: "false"
+    ports:
+      - "${HOST_INSECURE_PORT:-80}:80"
+    volumes:
+      - ./conf/traefik/wordpress.tmpl:/etc/traefik/dynamic/wordpress.yml:ro
+    depends_on:
+      wp:
+        condition: service_healthy
+
+  init:
+    image: libops/base@sha256:4a8d3997ac565981cd91ca36fd5a2b64955bac8d78a3632abd5a7137609be631
+    restart: no
+    working_dir: /var/www/bedrock
+    volumes:
+      - ./:/var/www/bedrock:rw
+    command: /var/www/bedrock/scripts/generate-secrets.sh
+    profiles: [none]
+
+  wp:
+    <<: *common
+    image: libops/wp:php83
+    build:
+      context: .
+      pull: true
+      args:
+        BASE_IMAGE: libops/wp:php83
+    working_dir: /var/www/bedrock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DOMAIN: "${DOMAIN:-localhost}"
+      LIBOPS_SMTP_HOST: "${LIBOPS_SMTP_HOST:-host.docker.internal}"
+      LIBOPS_SMTP_PORT: "${LIBOPS_SMTP_PORT:-25}"
+      SMTP_FROM: "${SMTP_FROM:-}"
+      WORDPRESS_ENABLE_HTTPS: "false"
+      WORDPRESS_HOME: "http://${DOMAIN:-localhost}"
+      WORDPRESS_SITEURL: "http://${DOMAIN:-localhost}/wp"
+    secrets:
+      - source: DB_ROOT_PASSWORD
+      - source: WORDPRESS_AUTH_KEY
+      - source: WORDPRESS_SECURE_AUTH_KEY
+      - source: WORDPRESS_LOGGED_IN_KEY
+      - source: WORDPRESS_NONCE_KEY
+      - source: WORDPRESS_AUTH_SALT
+      - source: WORDPRESS_SECURE_AUTH_SALT
+      - source: WORDPRESS_LOGGED_IN_SALT
+      - source: WORDPRESS_NONCE_SALT
+      - source: WORDPRESS_DB_PASSWORD
+        target: DB_PASSWORD
+      - source: WORDPRESS_ADMIN_PASSWORD
+    volumes:
+      - wordpress-uploads:/var/www/bedrock/web/app/uploads:rw
+    depends_on:
+      mariadb:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mariadb:
+    <<: *common
+    image: libops/mariadb:11@sha256:df935aa57a4444a1bd9024afdf8b3d78abfdfa2c4662320badd099fa6193de6b
+    volumes:
+      - mariadb-data:/var/lib/mysql:rw
+    secrets:
+      - source: DB_ROOT_PASSWORD

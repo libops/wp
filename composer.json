@@ -1,0 +1,79 @@
+{
+  "name": "libops/wp",
+  "type": "project",
+  "license": "MIT",
+  "description": "WordPress site built from the LibOps Bedrock Docker template.",
+  "keywords": [
+    "bedrock",
+    "composer",
+    "roots",
+    "wordpress",
+    "wp",
+    "wp-config"
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org",
+      "only": [
+        "wpackagist-plugin/*",
+        "wpackagist-theme/*"
+      ]
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "composer/installers": "^2.3",
+    "vlucas/phpdotenv": "^5.6",
+    "roots/bedrock-autoloader": "^1.0",
+    "roots/bedrock-disallow-indexing": "^2.0",
+    "roots/wordpress": "6.9.4",
+    "roots/wp-config": "^1.0",
+    "roots/wp-password-bcrypt": "^1.1",
+    "wpackagist-plugin/akismet": "*",
+    "wpackagist-plugin/disable-json-api": "*",
+    "wpackagist-plugin/hello-dolly": "*",
+    "wpackagist-plugin/wordpress-seo": "*",
+    "wpackagist-plugin/wpforms-lite": "*",
+    "wpackagist-theme/twentyten": "*",
+    "wpackagist-theme/twentyeleven": "*",
+    "wpackagist-theme/twentytwelve": "*",
+    "wpackagist-theme/twentythirteen": "*",
+    "wpackagist-theme/twentyfourteen": "*",
+    "wpackagist-theme/twentyfifteen": "*",
+    "wpackagist-theme/twentysixteen": "*",
+    "wpackagist-theme/twentyseventeen": "*",
+    "wpackagist-theme/twentynineteen": "*",
+    "wpackagist-theme/twentytwenty": "*",
+    "wpackagist-theme/twentytwentyone": "*",
+    "wpackagist-theme/twentytwentytwo": "*",
+    "wpackagist-theme/twentytwentythree": "*",
+    "wpackagist-theme/twentytwentyfour": "*",
+    "wpackagist-theme/wp-bootstrap-starter": "*"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "process-timeout": 0,
+    "allow-plugins": {
+      "composer/installers": true,
+      "roots/wordpress-core-installer": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "extra": {
+    "installer-paths": {
+      "web/app/mu-plugins/{$name}/": [
+        "type:wordpress-muplugin"
+      ],
+      "web/app/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "web/app/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    },
+    "wordpress-install-dir": "web/wp"
+  }
+}

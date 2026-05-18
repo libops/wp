@@ -1,0 +1,18 @@
+[Unit]
+Description=WordPress Bedrock Compose Stack
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/srv/wordpress-bedrock
+EnvironmentFile=-/srv/wordpress-bedrock/.env
+ExecStart=/usr/bin/docker compose -f docker-compose.yaml up -d --build
+ExecStop=/usr/bin/docker compose -f docker-compose.yaml down
+ExecReload=/usr/bin/docker compose -f docker-compose.yaml up -d --build
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

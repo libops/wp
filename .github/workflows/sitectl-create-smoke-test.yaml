@@ -1,0 +1,28 @@
+name: sitectl-create-smoke-test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sitectl-create-smoke-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  create:
+    name: sitectl create wp ${{ matrix.create_definition }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - create_definition: default
+            create_args: ""
+    uses: libops/.github/.github/workflows/sitectl-create-smoke-test.yaml@main
+    with:
+      plugin: wp
+      create-definition: ${{ matrix.create_definition }}
+      create-args: ${{ matrix.create_args }}
