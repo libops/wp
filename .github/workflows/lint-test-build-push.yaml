@@ -19,7 +19,7 @@ jobs:
 
   build-push:
     needs: [lint-test]
-    uses: libops/.github/.github/workflows/build-push-ghcr.yaml@main
+    uses: libops/.github/.github/workflows/build-push-ghcr.yaml@d7f0ba06b4c8a1f8559892ea65a0b1af4d024dd3 # main
     permissions:
       contents: read
       packages: write
