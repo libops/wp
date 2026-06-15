@@ -3,24 +3,4 @@
   extends: [
     'github>libops/renovate-config:default.json5',
   ],
-  packageRules: [
-    {
-      matchDatasources: ['docker'],
-      groupName: 'container images',
-    },
-    {
-      matchDatasources: ['composer'],
-      matchPackageNames: ['roots/wordpress'],
-      groupName: 'WordPress core',
-    },
-    {
-      matchDatasources: ['composer'],
-      matchPackageNames: ['/^wpackagist-(plugin|theme)\\//'],
-      groupName: 'WordPress plugins and themes',
-    },
-    {
-      matchDatasources: ['repology'],
-      groupName: 'Alpine packages',
-    },
-  ],
 }
