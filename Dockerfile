@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.20.0
-ARG BASE_IMAGE=libops/wp:php83
+# syntax=docker/dockerfile:1.20.0@sha256:26147acbda4f14c5add9946e2fd2ed543fc402884fd75146bd342a7f6271dc1d
+ARG BASE_IMAGE=libops/wp:php83@sha256:3dc10a7bc2044c36b646d5341188b81673a7b34377f8966bbe55a0c054d96659
 FROM ${BASE_IMAGE}
 
 ARG TARGETARCH
