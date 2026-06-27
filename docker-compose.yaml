@@ -81,8 +81,8 @@ services:
       LIBOPS_SMTP_PORT: "${LIBOPS_SMTP_PORT:-25}"
       SMTP_FROM: "${SMTP_FROM:-}"
       WORDPRESS_ENABLE_HTTPS: "false"
-      WORDPRESS_HOME: "http://${DOMAIN:-localhost}"
-      WORDPRESS_SITEURL: "http://${DOMAIN:-localhost}/wp"
+      WORDPRESS_HOME: "${SITE_URL:-${URI_SCHEME:-http}://${DOMAIN:-localhost}}"
+      WORDPRESS_SITEURL: "${SITE_URL:-${URI_SCHEME:-http}://${DOMAIN:-localhost}}/wp"
     secrets:
       - source: DB_ROOT_PASSWORD
       - source: WORDPRESS_AUTH_KEY
