@@ -43,6 +43,7 @@ services:
       - --providers.file.filename=/etc/traefik/dynamic/wordpress.yml
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
+      - --entrypoints.web.transport.respondingTimeouts.readTimeout=300s
     environment:
       DOMAIN: "${DOMAIN:-localhost}"
       TRAEFIK_TLS_ENABLED: "false"
@@ -55,7 +56,7 @@ services:
         condition: service_healthy
 
   init:
-    image: libops/base@sha256:4a8d3997ac565981cd91ca36fd5a2b64955bac8d78a3632abd5a7137609be631
+    image: libops/base:3.2.2.0
     restart: no
     working_dir: /var/www/bedrock
     volumes:
@@ -65,12 +66,12 @@ services:
 
   wp:
     <<: *common
-    image: libops/wp:php83
+    image: libops/wp:nginx-1.30.3-php84
     build:
       context: .
       pull: true
       args:
-        BASE_IMAGE: libops/wp:php83
+        BASE_IMAGE: libops/wp:nginx-1.30.3-php84
     working_dir: /var/www/bedrock
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -80,8 +81,8 @@ services:
       LIBOPS_SMTP_PORT: "${LIBOPS_SMTP_PORT:-25}"
       SMTP_FROM: "${SMTP_FROM:-}"
       WORDPRESS_ENABLE_HTTPS: "false"
-      WORDPRESS_HOME: "http://${DOMAIN:-localhost}"
-      WORDPRESS_SITEURL: "http://${DOMAIN:-localhost}/wp"
+      WORDPRESS_HOME: "${SITE_URL:-${URI_SCHEME:-http}://${DOMAIN:-localhost}}"
+      WORDPRESS_SITEURL: "${SITE_URL:-${URI_SCHEME:-http}://${DOMAIN:-localhost}}/wp"
     secrets:
       - source: DB_ROOT_PASSWORD
       - source: WORDPRESS_AUTH_KEY

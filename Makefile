@@ -1,56 +1,21 @@
-.PHONY: build deps init init-if-needed up down rollout composer wp-cli db-update db-export db-import test lint
+SHELL := /bin/bash
 
-DOCKER_IMAGE=libops/wp:php83
-DB_DUMP ?= /tmp/wp.sql
-DB_DUMP_ABS := $(abspath $(DB_DUMP))
-DB_DUMP_DIR := $(dir $(DB_DUMP_ABS))
-DB_DUMP_FILE := $(notdir $(DB_DUMP_ABS))
+.PHONY: help rollout test lint
+.SILENT:
 
-deps:
-	docker compose pull --ignore-buildable
+-include custom.Makefile
 
-build: deps
-	docker compose build --pull
+help: ## Show this help message
+	echo 'Usage: make [target]'
+	echo ''
+	echo 'Available targets:'
+	awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%s\033[0m\t%s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort | column -t -s $$'\t'
 
-init: build
-	docker compose run --rm init
-
-init-if-needed: build
-	./scripts/init-if-needed.sh
-
-up: init-if-needed
-	docker compose up --remove-orphans -d
-
-down:
-	docker compose down
-
-rollout:
+rollout: ## Roll out the currently checked out WordPress stack
 	./scripts/rollout.sh
 
-composer: build
-	docker compose exec wp composer install --no-interaction
-
-wp-cli: build
-	docker compose exec wp wp --allow-root --path=/var/www/bedrock/web/wp $(filter-out $@,$(MAKECMDGOALS))
-
-db-update: build
-	docker compose exec wp wp --allow-root --path=/var/www/bedrock/web/wp core update-db
-
-db-export: build
-	mkdir -p "$(DB_DUMP_DIR)"
-	docker compose exec wp wp --allow-root --path=/var/www/bedrock/web/wp db export "/tmp/$(DB_DUMP_FILE)"
-	docker compose cp wp:/tmp/$(DB_DUMP_FILE) "$(DB_DUMP_ABS)"
-
-db-import: build
-	test -f "$(DB_DUMP_ABS)"
-	docker compose cp "$(DB_DUMP_ABS)" wp:/tmp/$(DB_DUMP_FILE)
-	docker compose exec wp wp --allow-root --path=/var/www/bedrock/web/wp db import "/tmp/$(DB_DUMP_FILE)"
-
-lint:
-	./scripts/lint.sh
-
-test:
+test: ## Run template checks
 	./scripts/test.sh
 
-%:
-	@:
+lint: ## Lint template files
+	./scripts/lint.sh
