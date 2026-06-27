@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.20.0@sha256:26147acbda4f14c5add9946e2fd2ed543fc402884fd75146bd342a7f6271dc1d
-ARG BASE_IMAGE=libops/wp:php83@sha256:3dc10a7bc2044c36b646d5341188b81673a7b34377f8966bbe55a0c054d96659
+ARG BASE_IMAGE=libops/wp:nginx-1.30.3-php84
 FROM ${BASE_IMAGE}
 
 ARG TARGETARCH
@@ -9,7 +9,8 @@ ENV \
     COMPOSER_HOME=/tmp/composer
 WORKDIR /var/www/bedrock
 
-RUN curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /usr/local/bin/wp && \
+RUN if ! command -v php >/dev/null 2>&1 && command -v php84 >/dev/null 2>&1; then ln -sf "$(command -v php84)" /usr/bin/php; fi && \
+    curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /usr/local/bin/wp && \
     chmod +x /usr/local/bin/wp && \
     mkdir -p /var/www/bedrock/web/app/uploads && \
     cleanup.sh

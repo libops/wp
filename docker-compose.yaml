@@ -66,12 +66,12 @@ services:
 
   wp:
     <<: *common
-    image: libops/wp:php83
+    image: libops/wp:nginx-1.30.3-php84
     build:
       context: .
       pull: true
       args:
-        BASE_IMAGE: libops/wp:php83
+        BASE_IMAGE: libops/wp:nginx-1.30.3-php84
     working_dir: /var/www/bedrock
     extra_hosts:
       - "host.docker.internal:host-gateway"
