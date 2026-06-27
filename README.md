@@ -4,7 +4,7 @@ LibOps Docker Compose template for running a Composer-managed [Bedrock](https://
 
 ## Requirements
 
-- `sitectl` installed on the host that will run the site.
+- [sitectl](https://sitectl.libops.io/install) installed on the host that will run the site.
 - Docker with the Compose v2 plugin installed on the same host.
 
 ## Quick start
@@ -61,7 +61,7 @@ sitectl wp db export ./backup.sql
 sitectl wp db import ./backup.sql
 ```
 
-See the [WordPress sitectl plugin docs](https://github.com/libops/sitectl-docs/blob/main/plugins/wordpress.mdx) for WP-CLI, Composer, plugin/theme maintenance, lifecycle operations, and database helpers.
+See the [WordPress sitectl plugin docs](https://sitectl.libops.io/plugins/wordpress) for WP-CLI, Composer, plugin/theme maintenance, lifecycle operations, and database helpers.
 
 ## Makefile
 
@@ -84,6 +84,10 @@ Use `sitectl compose ...`, `sitectl traefik ...`, and `sitectl set ...` directly
 - `composer.json` manages WordPress core and downstream plugin/theme dependencies.
 
 Custom plugins and themes belong under `web/app/plugins`, `web/app/themes`, or `web/app/mu-plugins`. PHP `mail()` is routed through `msmtp` and relays through the Docker host by default.
+
+## License
+
+The Docker Compose template and LibOps-specific setup in this repository are licensed under the MIT License. WordPress is licensed separately under the GNU General Public License v2 or later; see `LICENSE.wordpress`.
 
 ## Attribution
 
