@@ -43,6 +43,7 @@ services:
       - --providers.file.filename=/etc/traefik/dynamic/wordpress.yml
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
+      - --entrypoints.web.transport.respondingTimeouts.readTimeout=300s
     environment:
       DOMAIN: "${DOMAIN:-localhost}"
       TRAEFIK_TLS_ENABLED: "false"
