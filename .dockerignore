@@ -1,6 +1,8 @@
 .git/
 .env
 secrets/
+docker-compose.override.yml
+docker-compose.override.yaml
 vendor/
 web/wp/
 web/app/uploads/

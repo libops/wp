@@ -46,9 +46,9 @@ services:
       - --entrypoints.web.transport.respondingTimeouts.readTimeout=300s
     environment:
       DOMAIN: "${DOMAIN:-localhost}"
-      TRAEFIK_TLS_ENABLED: "false"
+      URI_SCHEME: "${URI_SCHEME:-http}"
     ports:
-      - "${HOST_INSECURE_PORT:-80}:80"
+      - "80:80"
     volumes:
       - ./conf/traefik/wordpress.tmpl:/etc/traefik/dynamic/wordpress.yml:ro
     depends_on:

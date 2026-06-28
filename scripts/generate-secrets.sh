@@ -17,8 +17,11 @@ yq -r '.secrets[].file' docker-compose.yaml | uniq | while read -r SECRET; do
   fi
 done
 
-if [ -f docker-compose.override.yaml ]; then
-  yq -r '.secrets[].file' docker-compose.override.yaml | uniq | while read -r SECRET; do
+for OVERRIDE_FILE in docker-compose.override.yml docker-compose.override.yaml; do
+  if [ ! -f "${OVERRIDE_FILE}" ]; then
+    continue
+  fi
+  yq -r '.secrets[].file' "${OVERRIDE_FILE}" | uniq | while read -r SECRET; do
     if [ ! -f "${SECRET}" ]; then
       echo "Creating: ${SECRET}" >&2
       DIR=$(dirname "${SECRET}")
@@ -28,4 +31,4 @@ if [ -f docker-compose.override.yaml ]; then
       (grep -ao "${CHARACTERS}" < /dev/urandom || true) | head "-${LENGTH}" | tr -d '\n' > "${SECRET}"
     fi
   done
-fi
+done

@@ -8,6 +8,7 @@ docker compose up --remove-orphans -d
 
 max_attempts=20
 attempt=0
+target_url="${SITE_URL:-http://localhost/}"
 
 while [ $attempt -lt $max_attempts ]; do
   attempt=$(( attempt + 1 ))
@@ -15,7 +16,7 @@ while [ $attempt -lt $max_attempts ]; do
 
   sleep 10
 
-  if curl -sf "http://localhost:${HOST_INSECURE_PORT:-80}/" | grep -qi "wordpress"; then
+  if curl -sf "$target_url" | grep -qi "wordpress"; then
     echo "WordPress is up!"
     exit 0
   fi

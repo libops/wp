@@ -1,6 +1,7 @@
 .env
 secrets
 !secrets/.keep
+docker-compose.override.yml
 docker-compose.override.yaml
 vendor/
 web/wp/
