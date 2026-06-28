@@ -1,6 +1,6 @@
 # WordPress Bedrock Docker Template
 
-LibOps Docker Compose template for running a Composer-managed [Bedrock](https://roots.io/bedrock/) WordPress site with Traefik, MariaDB, and the LibOps WordPress PHP/nginx image. Use it with [`sitectl-wp`](https://github.com/libops/sitectl-wp).
+The WordPress Bedrock Docker Template gives you a Docker Compose repository for running a Composer-managed [Bedrock](https://roots.io/bedrock/) WordPress site. It includes Traefik, MariaDB, and the LibOps WordPress PHP/nginx image, and is designed to be managed with [`sitectl-wp`](https://github.com/libops/sitectl-wp).
 
 Docs:
 

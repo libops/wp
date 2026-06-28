@@ -3,7 +3,7 @@
 set -eou pipefail
 
 docker compose build --pull
-./scripts/init-if-needed.sh
+docker compose run --rm init
 docker compose up --remove-orphans -d
 
 max_attempts=20
