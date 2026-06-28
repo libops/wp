@@ -100,7 +100,7 @@ See the [WordPress sitectl plugin docs](https://sitectl.libops.io/plugins/wordpr
 The Makefile is intentionally small. It only keeps WordPress-specific targets that are not core sitectl operations:
 
 ```bash
-make rollout
+sitectl deploy
 make test
 make lint
 ```
