@@ -69,7 +69,6 @@ services:
     image: libops/wp:nginx-1.30.3-php84
     build:
       context: .
-      pull: true
       args:
         BASE_IMAGE: libops/wp:nginx-1.30.3-php84
     working_dir: /var/www/bedrock
@@ -100,7 +99,7 @@ services:
       - wordpress-uploads:/var/www/bedrock/web/app/uploads:rw
     depends_on:
       mariadb:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://localhost/ || exit 1"]
       interval: 30s
@@ -115,3 +114,9 @@ services:
       - mariadb-data:/var/lib/mysql:rw
     secrets:
       - source: DB_ROOT_PASSWORD
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot --password=\"$$(cat /run/secrets/DB_ROOT_PASSWORD)\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
