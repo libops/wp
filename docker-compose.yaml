@@ -46,9 +46,9 @@ services:
       - --entrypoints.web.transport.respondingTimeouts.readTimeout=300s
     environment:
       DOMAIN: "${DOMAIN:-localhost}"
-      TRAEFIK_TLS_ENABLED: "false"
+      URI_SCHEME: "${URI_SCHEME:-http}"
     ports:
-      - "${HOST_INSECURE_PORT:-80}:80"
+      - "80:80"
     volumes:
       - ./conf/traefik/wordpress.tmpl:/etc/traefik/dynamic/wordpress.yml:ro
     depends_on:
@@ -69,7 +69,6 @@ services:
     image: libops/wp:nginx-1.30.3-php84
     build:
       context: .
-      pull: true
       args:
         BASE_IMAGE: libops/wp:nginx-1.30.3-php84
     working_dir: /var/www/bedrock
@@ -100,7 +99,7 @@ services:
       - wordpress-uploads:/var/www/bedrock/web/app/uploads:rw
     depends_on:
       mariadb:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://localhost/ || exit 1"]
       interval: 30s
