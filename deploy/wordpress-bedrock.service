@@ -8,7 +8,6 @@ Wants=network-online.target
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/srv/wordpress-bedrock
-EnvironmentFile=-/srv/wordpress-bedrock/.env
 ExecStart=/usr/bin/docker compose -f docker-compose.yaml up -d --build
 ExecStop=/usr/bin/docker compose -f docker-compose.yaml down
 ExecReload=/usr/bin/docker compose -f docker-compose.yaml up -d --build

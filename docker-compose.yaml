@@ -42,17 +42,14 @@ services:
     <<: *common
     image: traefik:v3.6.13@sha256:34d5089d0b414945342848518b383f11f5b3a645504ed87b77ffeb9d683d0e48
     command:
-      - --providers.file.filename=/etc/traefik/dynamic/wordpress.yml
+      - --providers.file.directory=/etc/traefik/dynamic
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
       - --entrypoints.web.transport.respondingTimeouts.readTimeout=300s
-    environment:
-      DOMAIN: "${DOMAIN:-localhost}"
-      URI_SCHEME: "${URI_SCHEME:-http}"
     ports:
       - "80:80"
     volumes:
-      - ./conf/traefik/wordpress.tmpl:/etc/traefik/dynamic/wordpress.yml:ro
+      - ./conf/traefik:/etc/traefik/dynamic:ro
     depends_on:
       wp:
         condition: service_healthy
@@ -76,13 +73,12 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      DOMAIN: "${DOMAIN:-localhost}"
       LIBOPS_SMTP_HOST: "${LIBOPS_SMTP_HOST:-host.docker.internal}"
       LIBOPS_SMTP_PORT: "${LIBOPS_SMTP_PORT:-25}"
       SMTP_FROM: "${SMTP_FROM:-}"
       WORDPRESS_ENABLE_HTTPS: "false"
-      WORDPRESS_HOME: "${SITE_URL:-${URI_SCHEME:-http}://${DOMAIN:-localhost}}"
-      WORDPRESS_SITEURL: "${SITE_URL:-${URI_SCHEME:-http}://${DOMAIN:-localhost}}/wp"
+      WORDPRESS_HOME: "http://localhost"
+      WORDPRESS_SITEURL: "http://localhost/wp"
     secrets:
       - source: DB_ROOT_PASSWORD
       - source: WORDPRESS_AUTH_KEY

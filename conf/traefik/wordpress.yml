@@ -1,0 +1,26 @@
+http:
+  services:
+    wordpress:
+      loadBalancer:
+        servers:
+          - url: "http://wp:80"
+  middlewares:
+    wordpress-uploads-redirect:
+      redirectRegex:
+        regex: '^https?://[^/]+/wp-content/uploads/(.*)'
+        replacement: '/app/uploads/${1}'
+        permanent: true
+  routers:
+    wordpress-uploads-web:
+      rule: 'Host(`localhost`) && PathPrefix(`/wp-content/uploads/`)'
+      entryPoints:
+        - web
+      priority: 100
+      middlewares:
+        - wordpress-uploads-redirect
+      service: noop@internal
+    wordpress-web:
+      rule: 'Host(`localhost`)'
+      entryPoints:
+        - web
+      service: wordpress
