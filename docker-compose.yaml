@@ -66,7 +66,6 @@ services:
 
   wp:
     <<: *common
-    image: libops/wp:nginx-1.30.3-php84
     build:
       context: .
       args:
