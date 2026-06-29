@@ -1,4 +1,6 @@
 ---
+name: wp
+
 x-common: &common
   restart: unless-stopped
   networks:

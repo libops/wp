@@ -1,7 +1,0 @@
-[template]
-src = "wordpress.conf.tmpl"
-dest = "/etc/nginx/shared/wordpress.conf"
-uid = 0
-gid = 0
-mode = "0644"
-keys = [ "/" ]
