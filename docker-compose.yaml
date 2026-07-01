@@ -40,7 +40,7 @@ secrets:
 services:
   traefik:
     <<: *common
-    image: traefik:v3.6.13@sha256:34d5089d0b414945342848518b383f11f5b3a645504ed87b77ffeb9d683d0e48
+    image: traefik:v3.7.6@sha256:21a3d83696379bac6434bb32e1dde0aff0e84ef2abd053ed3db87d3f45e749b2
     command:
       - --providers.file.directory=/etc/traefik/dynamic
       - --providers.file.watch=true
@@ -106,7 +106,7 @@ services:
 
   mariadb:
     <<: *common
-    image: libops/mariadb:11@sha256:df935aa57a4444a1bd9024afdf8b3d78abfdfa2c4662320badd099fa6193de6b
+    image: libops/mariadb:11@sha256:faab6f2e647fc8fd0a2bb5d9d8632428e91bb19d22b23ce46f56007fe5af84e3
     volumes:
       - mariadb-data:/var/lib/mysql:rw
     secrets:
