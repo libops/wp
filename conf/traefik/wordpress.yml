@@ -12,7 +12,7 @@ http:
         permanent: true
   routers:
     wordpress-uploads-web:
-      rule: 'Host(`localhost`) && PathPrefix(`/wp-content/uploads/`)'
+      rule: 'PathPrefix(`/wp-content/uploads/`)'
       entryPoints:
         - web
       priority: 100
@@ -20,7 +20,7 @@ http:
         - wordpress-uploads-redirect
       service: noop@internal
     wordpress-web:
-      rule: 'Host(`localhost`)'
+      rule: 'PathPrefix(`/`)'
       entryPoints:
         - web
       service: wordpress
