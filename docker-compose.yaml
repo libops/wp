@@ -55,7 +55,7 @@ services:
         condition: service_healthy
 
   init:
-    image: libops/base:3.2.2.0
+    image: libops/base:3.2.2.0@sha256:60c788c0dcf1fed021ee17d2847a45dde2b559ecef19b5fa11c2314356976ba9
     restart: no
     working_dir: /var/www/bedrock
     volumes:
