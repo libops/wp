@@ -72,6 +72,8 @@ sitectl set ingress enabled --trusted-ip 203.0.113.10/32 --max-upload-size 2G --
 sitectl converge
 ```
 
+The ingress component writes `INGRESS_HOSTNAMES` as comma-separated hostnames and `INGRESS_SCHEME` as `http` or `https` into the app container. Runtime config is rendered from those values during container startup, so generated sites should not carry separate app URL env vars for the same public route.
+
 Run WordPress-specific helpers documented in the [WordPress plugin docs](https://sitectl.libops.io/plugins/wordpress):
 
 ```bash
