@@ -76,9 +76,8 @@ services:
       LIBOPS_SMTP_HOST: "${LIBOPS_SMTP_HOST:-host.docker.internal}"
       LIBOPS_SMTP_PORT: "${LIBOPS_SMTP_PORT:-25}"
       SMTP_FROM: "${SMTP_FROM:-}"
-      WORDPRESS_ENABLE_HTTPS: "false"
-      WORDPRESS_HOME: "http://localhost"
-      WORDPRESS_SITEURL: "http://localhost/wp"
+      INGRESS_HOSTNAMES: "localhost"
+      INGRESS_SCHEME: "http"
     secrets:
       - source: DB_ROOT_PASSWORD
       - source: WORDPRESS_AUTH_KEY

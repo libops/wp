@@ -29,8 +29,8 @@ ENV \
     DB_NAME=wordpress \
     DB_USER=wordpress \
     DB_PASSWORD=changeme \
-    WORDPRESS_HOME=http://localhost \
-    WORDPRESS_SITEURL=http://localhost/wp \
+    INGRESS_HOSTNAMES=localhost \
+    INGRESS_SCHEME=http \
     WORDPRESS_SITE_TITLE=WordPress \
     WORDPRESS_ADMIN_USERNAME=admin \
     WORDPRESS_ADMIN_EMAIL=admin@example.com \
@@ -38,7 +38,6 @@ ENV \
     WORDPRESS_LOCALE=en_US \
     WORDPRESS_TABLE_PREFIX=wp_ \
     WORDPRESS_BLOG_PUBLIC=0 \
-    WORDPRESS_ENABLE_HTTPS=false \
     WORDPRESS_AUTH_KEY=changeme \
     WORDPRESS_SECURE_AUTH_KEY=changeme \
     WORDPRESS_LOGGED_IN_KEY=changeme \
