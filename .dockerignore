@@ -1,8 +1,24 @@
 .git/
-.env
+.github/
+.DS_Store
+.env*
 secrets/
+certs/
+backups/
+acme.json
 docker-compose.override.yml
 docker-compose.override.yaml
 vendor/
 web/wp/
 web/app/uploads/
+
+# Composer exclusively owns installer destinations. Local package sources live
+# under packages/ and are copied into these directories by Composer.
+web/app/mu-plugins/
+web/app/plugins/
+web/app/themes/
+
+# Do not copy package-local dependency or VCS state into production images.
+packages/**/.git
+packages/**/vendor/
+packages/**/node_modules/

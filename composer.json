@@ -19,6 +19,13 @@
         "wpackagist-plugin/*",
         "wpackagist-theme/*"
       ]
+    },
+    {
+      "type": "path",
+      "url": "packages/*",
+      "options": {
+        "symlink": false
+      }
     }
   ],
   "require": {
@@ -29,27 +36,26 @@
     "roots/bedrock-disallow-indexing": "^2.0",
     "roots/wordpress": "6.9.4",
     "roots/wp-config": "^1.0",
-    "roots/wp-password-bcrypt": "^1.1",
-    "wpackagist-plugin/akismet": "*",
-    "wpackagist-plugin/disable-json-api": "*",
-    "wpackagist-plugin/hello-dolly": "*",
-    "wpackagist-plugin/wordpress-seo": "*",
-    "wpackagist-plugin/wpforms-lite": "*",
-    "wpackagist-theme/twentyten": "*",
-    "wpackagist-theme/twentyeleven": "*",
-    "wpackagist-theme/twentytwelve": "*",
-    "wpackagist-theme/twentythirteen": "*",
-    "wpackagist-theme/twentyfourteen": "*",
-    "wpackagist-theme/twentyfifteen": "*",
-    "wpackagist-theme/twentysixteen": "*",
-    "wpackagist-theme/twentyseventeen": "*",
-    "wpackagist-theme/twentynineteen": "*",
-    "wpackagist-theme/twentytwenty": "*",
-    "wpackagist-theme/twentytwentyone": "*",
-    "wpackagist-theme/twentytwentytwo": "*",
-    "wpackagist-theme/twentytwentythree": "*",
-    "wpackagist-theme/twentytwentyfour": "*",
-    "wpackagist-theme/wp-bootstrap-starter": "*"
+    "wpackagist-plugin/akismet": "5.6",
+    "wpackagist-plugin/disable-json-api": "1.8",
+    "wpackagist-plugin/hello-dolly": "1.7.2",
+    "wpackagist-plugin/wordpress-seo": "27.3",
+    "wpackagist-plugin/wpforms-lite": "1.10.0.4",
+    "wpackagist-theme/twentyeleven": "5.0",
+    "wpackagist-theme/twentyfifteen": "4.1",
+    "wpackagist-theme/twentyfourteen": "4.4",
+    "wpackagist-theme/twentynineteen": "3.2",
+    "wpackagist-theme/twentyseventeen": "4.0",
+    "wpackagist-theme/twentysixteen": "3.7",
+    "wpackagist-theme/twentyten": "4.5",
+    "wpackagist-theme/twentythirteen": "4.5",
+    "wpackagist-theme/twentytwelve": "4.7",
+    "wpackagist-theme/twentytwenty": "3.0",
+    "wpackagist-theme/twentytwentyfour": "1.4",
+    "wpackagist-theme/twentytwentyone": "2.7",
+    "wpackagist-theme/twentytwentythree": "1.6",
+    "wpackagist-theme/twentytwentytwo": "2.1",
+    "wpackagist-theme/wp-bootstrap-starter": "3.5.3"
   },
   "config": {
     "optimize-autoloader": true,

@@ -1,32 +1,26 @@
-.env
-secrets
-!secrets/.keep
+.env*
+certs/*
+!certs/.gitignore
+secrets/*
+!secrets/.gitignore
 docker-compose.override.yml
 docker-compose.override.yaml
+backups/
+acme.json
 vendor/
 web/wp/
 web/app/uploads/
 
-# Composer-installed WordPress content should not be committed by default.
-web/app/mu-plugins/bedrock-autoloader/
-web/app/mu-plugins/bedrock-disallow-indexing/
-web/app/plugins/akismet/
-web/app/plugins/disable-json-api/
-web/app/plugins/hello-dolly/
-web/app/plugins/wordpress-seo/
-web/app/plugins/wpforms-lite/
-web/app/themes/twentyeleven/
-web/app/themes/twentyfifteen/
-web/app/themes/twentyfourteen/
-web/app/themes/twentynineteen/
-web/app/themes/twentyseventeen/
-web/app/themes/twentysixteen/
-web/app/themes/twentyten/
-web/app/themes/twentythirteen/
-web/app/themes/twentytwelve/
-web/app/themes/twentytwenty/
-web/app/themes/twentytwentyfour/
-web/app/themes/twentytwentyone/
-web/app/themes/twentytwentythree/
-web/app/themes/twentytwentytwo/
-web/app/themes/wp-bootstrap-starter/
+# Composer exclusively owns installer destinations. Keep local package sources
+# under packages/ and let Composer copy them into web/app.
+/web/app/mu-plugins/*
+!/web/app/mu-plugins/.gitkeep
+/web/app/plugins/*
+!/web/app/plugins/.gitkeep
+/web/app/themes/*
+!/web/app/themes/.gitkeep
+
+# Package source is tracked, but package-local dependency and VCS state is not.
+/packages/*/.git/
+/packages/*/vendor/
+/packages/*/node_modules/

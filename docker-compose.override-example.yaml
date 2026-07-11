@@ -4,13 +4,14 @@ services:
       LIBOPS_SMTP_HOST: mailpit
       LIBOPS_SMTP_PORT: "1025"
     volumes:
-      - ./web/app/plugins:/var/www/bedrock/web/app/plugins:rw
-      - ./web/app/themes:/var/www/bedrock/web/app/themes:rw
+      - ./web/app/mu-plugins:/var/www/bedrock/web/app/mu-plugins:z,rw
+      - ./web/app/plugins:/var/www/bedrock/web/app/plugins:z,rw
+      - ./web/app/themes:/var/www/bedrock/web/app/themes:z,rw
   mariadb:
     ports:
-      - 3306:3306
+      - "3306:3306"
   mailpit:
     image: axllent/mailpit:v1.26@sha256:079759020faa42e243a07aaa3e31086de70e93e78b02b844e4149e0108dd5428
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "1025:1025"
+      - "8025:8025"

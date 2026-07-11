@@ -3,20 +3,6 @@
 set -euo pipefail
 
 service="${COMPOSE_SERVICE:-wp}"
-image="$(docker compose config --format json | jq -r --arg service "${service}" '.services[$service].image // empty')"
-
-if [ -z "${image}" ]; then
-  echo "Compose service ${service} does not define an image" >&2
-  exit 1
-fi
-
-case "${image}" in
-  *libops*) ;;
-  *)
-    echo "Expected ${service} image to be a libops image, got ${image}" >&2
-    exit 1
-    ;;
-esac
 
 if command -v hadolint >/dev/null 2>&1; then
   echo "Running hadolint on Dockerfiles..."
@@ -39,30 +25,30 @@ else
 fi
 
 docker compose build --pull "${service}"
+image_ref="$(docker compose build --print "${service}" | jq -er --arg service "${service}" '.target[$service].tags[0]')"
+image_id="$(docker image inspect --format '{{.Id}}' "${image_ref}")"
+if [ -z "${image_id}" ]; then
+  echo "Could not resolve the built image for Compose service ${service}" >&2
+  exit 1
+fi
 
 docker run --rm \
   --volume "${PWD}:/workspace:ro" \
   --workdir /workspace \
   --entrypoint sh \
-  "${image}" \
+  "${image_id}" \
   -lc '
     set -eu
 
-    paths=""
-    for dir in web/app/mu-plugins/custom web/app/plugins/custom web/app/themes/custom; do
-      if [ -d "${dir}" ]; then
-        paths="${paths} ${dir}"
-        find "${dir}" -type f -name "*.php" -exec php -l {} \;
-      fi
-    done
-
-    if [ -z "${paths}" ]; then
-      echo "No custom WordPress plugin or theme directories found; skipping WordPress PHP lint."
+    if [ ! -d packages ] || ! find packages -type f -name "*.php" | grep -q .; then
+      echo "No local WordPress package PHP files found; skipping WordPress PHP lint."
       exit 0
     fi
 
+    find packages -type f -name "*.php" -exec php -l {} \;
+
     if [ -x vendor/bin/phpcs ]; then
-      vendor/bin/phpcs --standard=WordPress --extensions=php ${paths}
+      vendor/bin/phpcs --standard=WordPress --extensions=php packages
     else
       echo "vendor/bin/phpcs not found, skipped WordPress coding standards."
     fi

@@ -1,6 +1,4 @@
 ---
-name: wp
-
 x-common: &common
   restart: unless-stopped
   networks:
@@ -9,7 +7,6 @@ x-common: &common
 networks:
   default:
 volumes:
-  acme-data: {}
   mariadb-data: {}
   wordpress-uploads: {}
 
@@ -40,8 +37,9 @@ secrets:
 services:
   traefik:
     <<: *common
-    image: traefik:v3.6.13@sha256:34d5089d0b414945342848518b383f11f5b3a645504ed87b77ffeb9d683d0e48
+    image: traefik:v3.7.5@sha256:e4d98158c01ad752fc1071d4e9573788747230d902cdde00a772516e692d07c9
     command:
+      - --ping=true
       - --providers.file.directory=/etc/traefik/dynamic
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
@@ -49,26 +47,29 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./conf/traefik:/etc/traefik/dynamic:ro
+      - ./conf/traefik:/etc/traefik/dynamic:ro,z
     depends_on:
       wp:
         condition: service_healthy
+    healthcheck:
+      test: traefik healthcheck --ping
+      start_period: 10s
 
   init:
-    image: libops/base:3.2.2.0
+    image: libops/base:3.2.2.0@sha256:2382876ad70c936e99f6b838fb16c709cb9d9f91e6aa3be5625355ee1f3fab90
     restart: no
-    working_dir: /var/www/bedrock
+    working_dir: /
     volumes:
-      - ./:/var/www/bedrock:rw
-    command: /var/www/bedrock/scripts/generate-secrets.sh
+      - ./secrets:/secrets:rw,z
+      - ./scripts:/scripts:ro,z
+      - ./docker-compose.yaml:/docker-compose.yaml:ro,z
+    command: /scripts/generate-secrets.sh
     profiles: [none]
 
   wp:
     <<: *common
     build:
       context: .
-      args:
-        BASE_IMAGE: libops/wp:nginx-1.30.3-php84
     working_dir: /var/www/bedrock
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -79,7 +80,6 @@ services:
       INGRESS_HOSTNAMES: "localhost"
       INGRESS_SCHEME: "http"
     secrets:
-      - source: DB_ROOT_PASSWORD
       - source: WORDPRESS_AUTH_KEY
       - source: WORDPRESS_SECURE_AUTH_KEY
       - source: WORDPRESS_LOGGED_IN_KEY
@@ -94,18 +94,43 @@ services:
     volumes:
       - wordpress-uploads:/var/www/bedrock/web/app/uploads:rw
     depends_on:
+      database-init:
+        condition: service_completed_successfully
       mariadb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost/ || exit 1"]
+      test: ["CMD-SHELL", "test -f /installed && wget -q --spider http://localhost/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 5m
+
+  database-init:
+    image: libops/base:3.2.2.0@sha256:2382876ad70c936e99f6b838fb16c709cb9d9f91e6aa3be5625355ee1f3fab90
+    restart: "no"
+    networks:
+      default:
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_NAME: wordpress
+      DB_USER: wordpress
+      DB_CHARACTER_SET: utf8mb4
+      DB_COLLATION: utf8mb4_unicode_ci
+    secrets:
+      - source: DB_ROOT_PASSWORD
+      - source: WORDPRESS_DB_PASSWORD
+        target: DB_PASSWORD
+    volumes:
+      - ./scripts/init-database.sh:/usr/local/bin/init-database.sh:ro,z
+    entrypoint: /usr/local/bin/init-database.sh
+    depends_on:
+      mariadb:
+        condition: service_healthy
 
   mariadb:
     <<: *common
-    image: libops/mariadb:11@sha256:df935aa57a4444a1bd9024afdf8b3d78abfdfa2c4662320badd099fa6193de6b
+    image: libops/mariadb:11@sha256:edc726a734409b93a54535e9251132d778575c0f7e77ae4ef552c9fe936cc560
     volumes:
       - mariadb-data:/var/lib/mysql:rw
     secrets:
