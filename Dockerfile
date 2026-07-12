@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=libops/wp:nginx-1.30.3-php84
+ARG BASE_IMAGE=libops/wp:nginx-1.30.3-php84@sha256:8c6ded73f2e4da634c8dd4dc620bc038ee79dae294a7720ceb46c0daa16a3143
 FROM ${BASE_IMAGE}
 
 ARG TARGETARCH
