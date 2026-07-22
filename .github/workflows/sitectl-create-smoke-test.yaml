@@ -20,7 +20,7 @@ jobs:
         include:
           - create_definition: default
             create_args: ""
-    uses: libops/.github/.github/workflows/sitectl-create-smoke-test.yaml@e1e30b58c9c566f72b22f03e637cd5218d635727 # main
+    uses: libops/.github/.github/workflows/sitectl-create-smoke-test.yaml@5f44a8c8d157bb7e5cf6d9e1c98847a604e87455 # main
     with:
       plugin: wp
       create-definition: ${{ matrix.create_definition }}
