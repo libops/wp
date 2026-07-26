@@ -19,7 +19,8 @@ jobs:
       matrix:
         include:
           - create_definition: default
-            create_args: ""
+            create_args: >-
+              --yolo
     uses: libops/.github/.github/workflows/sitectl-create-smoke-test.yaml@e1e30b58c9c566f72b22f03e637cd5218d635727 # main
     with:
       plugin: wp
