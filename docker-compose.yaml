@@ -37,7 +37,7 @@ secrets:
 services:
   traefik:
     <<: *common
-    image: traefik:v3.7.8@sha256:4299bbed850421258fc5448c2e0e6ad350981d4d335a68de11b92448aedbefe5
+    image: traefik:v3.7.9@sha256:652929a140a32d7cafafb13c6cdfab5376cfeff800f51397b87b524501ed02a8
     command:
       - --ping=true
       - --providers.file.directory=/etc/traefik/dynamic
@@ -56,7 +56,7 @@ services:
       start_period: 10s
 
   init:
-    image: libops/base:3.2.2.0@sha256:c352cf640f32e37e0a4372cb96bba4aa9be1ea05b78441f744c75a5dd7534b28
+    image: libops/base:3.2.2.0@sha256:d4da77a62c6dead3d52c0e0cc4f38647379d7edd8b2be7b17a2cce06d469b545
     restart: no
     working_dir: /
     volumes:
@@ -106,7 +106,7 @@ services:
       start_period: 5m
 
   database-init:
-    image: libops/base:3.2.2.0@sha256:c352cf640f32e37e0a4372cb96bba4aa9be1ea05b78441f744c75a5dd7534b28
+    image: libops/base:3.2.2.0@sha256:d4da77a62c6dead3d52c0e0cc4f38647379d7edd8b2be7b17a2cce06d469b545
     restart: "no"
     networks:
       default:
@@ -130,7 +130,7 @@ services:
 
   mariadb:
     <<: *common
-    image: libops/mariadb:11@sha256:e629d8de6b3831aed084111cbb2eccd507b8b11cf513f1b3c27269c0f136ae2d
+    image: libops/mariadb:11@sha256:7e0eb90c7cba204b62e8bed72fba00193cbc2e50072fc6e40a6fab8de4b0b857
     volumes:
       - mariadb-data:/var/lib/mysql:rw
     secrets:
