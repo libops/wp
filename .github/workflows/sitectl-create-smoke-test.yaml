@@ -26,5 +26,3 @@ jobs:
       create-definition: ${{ matrix.create_definition }}
       create-args: ${{ matrix.create_args }}
       packages: sitectl sitectl-wp
-      package-versions: sitectl=1.0.0 sitectl-wp=1.0.0
-      allow-unversioned-packages: false
