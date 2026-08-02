@@ -21,9 +21,16 @@ jobs:
           - create_definition: default
             create_args: >-
               --yolo
-    uses: libops/.github/.github/workflows/sitectl-create-smoke-test.yaml@e1e30b58c9c566f72b22f03e637cd5218d635727 # main
+    uses: libops/.github/.github/workflows/sitectl-create-smoke-test.yaml@92a70c027cfe2553a8bc4adaba67a3e620ff6958 # main
     with:
       plugin: wp
       create-definition: ${{ matrix.create_definition }}
       create-args: ${{ matrix.create_args }}
-      packages: sitectl sitectl-wp
+      packages: sitectl
+      package-versions: sitectl=1.6.1
+      allow-unversioned-packages: false
+      sitectl-repository: libops/sitectl
+      sitectl-ref: v1.6.3
+      local-plugin-repository: libops/sitectl-wp
+      local-plugin-ref: v1.2.1
+      local-plugin-path: sitectl-wp-source
