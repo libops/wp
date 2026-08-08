@@ -54,7 +54,7 @@ sitectl verify --strict
 
 ### Behavioral release gate
 
-`sitectl verify --strict` compares runtime core with `composer.lock`, checks scoped database identity, REST, WP-Cron, Bedrock URLs, uploads, and the managed administrator. It is read-only on retained sites. Fresh disposable CI additionally runs `sitectl verify --strict --disposable`, which imports, reads, and deletes a tiny media fixture as the service account. The verifier programs live in `scripts/`, are mounted read-only at stable paths under `/usr/local/lib/sitectl`, and are invoked as files so their behavior stays reviewable with the template.
+`sitectl verify --strict` compares runtime core with `composer.lock`, checks scoped database identity, REST, WP-Cron, Bedrock URLs, uploads, and the managed administrator. It is read-only on retained sites. Fresh disposable CI additionally runs `sitectl verify --strict --disposable`, which imports, reads, and deletes a tiny media fixture as the service account. Container-side verifier and readiness programs live in `scripts/`, are mounted read-only at stable paths under `/usr/local/lib/sitectl`, and are invoked as files so their behavior stays reviewable with the template. The image-backed package lint likewise invokes `scripts/wordpress-lint-packages.sh` from the read-only repository mount instead of embedding a second shell program.
 
 Do not use `--disposable` on retained customer data. Passing the container-local gate is not hosted acceptance: verify public DNS/TLS and ingress, browser login, real mail delivery, externally triggered cron, media retrieval, and database/uploads restore before promotion.
 

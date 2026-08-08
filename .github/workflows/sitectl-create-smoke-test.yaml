@@ -28,7 +28,7 @@ jobs:
       create-args: ${{ matrix.create_args }}
       local-plugin-path: sitectl-wp
       local-plugin-repository: libops/sitectl-wp
-      local-plugin-ref: 40e97cbdfee19fd443ccebf7701b44ad035340ca
+      local-plugin-ref: a92c26d85fc491d9cb4e934e33c4cbdf9107a7da
       packages: sitectl
       package-versions: sitectl=1.8.1
       allow-unversioned-packages: false

@@ -16,7 +16,17 @@ cleanup() {
   rm -f -- "$fixture_path"
 }
 
-trap cleanup EXIT INT TERM
+on_interrupt() {
+  exit 130
+}
+
+on_terminate() {
+  exit 143
+}
+
+trap cleanup EXIT
+trap on_interrupt INT
+trap on_terminate TERM
 
 php /usr/local/lib/sitectl/wordpress-media-fixture.php "$fixture_path"
 attachment="$(wp_verify media import "$fixture_path" --porcelain)"

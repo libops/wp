@@ -100,6 +100,7 @@ services:
       - ./scripts/wordpress-runtime-state.php:/usr/local/lib/sitectl/wordpress-runtime-state.php:ro,z
       - ./scripts/wordpress-media-fixture.php:/usr/local/lib/sitectl/wordpress-media-fixture.php:ro,z
       - ./scripts/wordpress-media-round-trip.sh:/usr/local/lib/sitectl/wordpress-media-round-trip.sh:ro,z
+      - ./scripts/wordpress-wait-installed.sh:/usr/local/lib/sitectl/wordpress-wait-installed.sh:ro,z
     depends_on:
       database-init:
         condition: service_completed_successfully
