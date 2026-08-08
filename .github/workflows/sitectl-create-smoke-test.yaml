@@ -29,3 +29,5 @@ jobs:
       packages: sitectl sitectl-wp
       package-versions: sitectl=1.6.3 sitectl-wp=1.2.1
       allow-unversioned-packages: false
+      run-verify: true
+      verify-args: --disposable
