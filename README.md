@@ -54,15 +54,15 @@ sitectl verify --strict
 
 ### Behavioral release gate
 
-`sitectl verify --strict` compares runtime core with `composer.lock`, checks scoped database identity, REST, WP-Cron, Bedrock URLs, uploads, and the managed administrator. It is read-only on retained sites. Fresh disposable CI additionally runs `sitectl verify --strict --disposable`, which imports, reads, and deletes a tiny media fixture as the service account.
+`sitectl verify --strict` compares runtime core with `composer.lock`, checks scoped database identity, REST, WP-Cron, Bedrock URLs, uploads, and the managed administrator. It is read-only on retained sites. Fresh disposable CI additionally runs `sitectl verify --strict --disposable`, which imports, reads, and deletes a tiny media fixture as the service account. The verifier programs live in `scripts/`, are mounted read-only at stable paths under `/usr/local/lib/sitectl`, and are invoked as files so their behavior stays reviewable with the template.
 
 Do not use `--disposable` on retained customer data. Passing the container-local gate is not hosted acceptance: verify public DNS/TLS and ingress, browser login, real mail delivery, externally triggered cron, media retrieval, and database/uploads restore before promotion.
 
 Update the application base tag or pin that base by digest with [`sitectl image`](https://sitectl.libops.io/commands/image):
 
 ```bash
-sitectl image set --tag wp=nginx-1.30.3-php84
-sitectl image set --build-arg wp.BASE_IMAGE=libops/wp:nginx-1.30.3-php84@sha256:...
+sitectl image set --tag wp=nginx-1.30.4-php84
+sitectl image set --build-arg wp.BASE_IMAGE=libops/wp:nginx-1.30.4-php84@sha256:...
 ```
 
 Populate the complete Composer-owned must-use plugin, plugin, and theme trees in the checkout, then enable their local development bind mounts with [`sitectl set`](https://sitectl.libops.io/commands/set):

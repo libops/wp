@@ -96,6 +96,10 @@ services:
       - source: WORDPRESS_ADMIN_PASSWORD
     volumes:
       - wordpress-uploads:/var/www/bedrock/web/app/uploads:rw
+      - ./scripts/wordpress-locked-core.php:/usr/local/lib/sitectl/wordpress-locked-core.php:ro,z
+      - ./scripts/wordpress-runtime-state.php:/usr/local/lib/sitectl/wordpress-runtime-state.php:ro,z
+      - ./scripts/wordpress-media-fixture.php:/usr/local/lib/sitectl/wordpress-media-fixture.php:ro,z
+      - ./scripts/wordpress-media-round-trip.sh:/usr/local/lib/sitectl/wordpress-media-round-trip.sh:ro,z
     depends_on:
       database-init:
         condition: service_completed_successfully
