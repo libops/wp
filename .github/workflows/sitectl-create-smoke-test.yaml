@@ -26,11 +26,8 @@ jobs:
       plugin: wp
       create-definition: ${{ matrix.create_definition }}
       create-args: ${{ matrix.create_args }}
-      local-plugin-path: sitectl-wp
-      local-plugin-repository: libops/sitectl-wp
-      local-plugin-ref: a92c26d85fc491d9cb4e934e33c4cbdf9107a7da
-      packages: sitectl
-      package-versions: sitectl=1.8.1
+      packages: sitectl sitectl-wp
+      package-versions: sitectl=1.8.1 sitectl-wp=2.0.0
       allow-unversioned-packages: false
       run-verify: true
       verify-args: --disposable
