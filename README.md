@@ -49,13 +49,20 @@ Check the site and context configuration with [`sitectl healthcheck`](https://si
 ```bash
 sitectl healthcheck
 sitectl validate
+sitectl verify --strict
 ```
+
+### Behavioral release gate
+
+`sitectl verify --strict` compares runtime core with `composer.lock`, checks scoped database identity, REST, WP-Cron, Bedrock URLs, uploads, and the managed administrator. It is read-only on retained sites. Fresh disposable CI additionally runs `sitectl verify --strict --disposable`, which imports, reads, and deletes a tiny media fixture as the service account. Container-side verifier and readiness programs live in `scripts/`, are mounted read-only at stable paths under `/usr/local/lib/sitectl`, and are invoked as files so their behavior stays reviewable with the template. The image-backed package lint likewise invokes `scripts/wordpress-lint-packages.sh` from the read-only repository mount instead of embedding a second shell program.
+
+Do not use `--disposable` on retained customer data. Passing the container-local gate is not hosted acceptance: verify public DNS/TLS and ingress, browser login, real mail delivery, externally triggered cron, media retrieval, and database/uploads restore before promotion.
 
 Update the application base tag or pin that base by digest with [`sitectl image`](https://sitectl.libops.io/commands/image):
 
 ```bash
-sitectl image set --tag wp=nginx-1.30.3-php84
-sitectl image set --build-arg wp.BASE_IMAGE=libops/wp:nginx-1.30.3-php84@sha256:...
+sitectl image set --tag wp=nginx-1.30.4-php84
+sitectl image set --build-arg wp.BASE_IMAGE=libops/wp:nginx-1.30.4-php84@sha256:...
 ```
 
 Populate the complete Composer-owned must-use plugin, plugin, and theme trees in the checkout, then enable their local development bind mounts with [`sitectl set`](https://sitectl.libops.io/commands/set):
@@ -68,6 +75,16 @@ sitectl set dev-mode enabled
 The Composer helper runs a one-shot container as the host user with the active checkout mounted at `/workspace`.
 Commands such as `require`, `remove`, and `update` write changes to `composer.json` and `composer.lock` directly
 into the checkout rather than a disposable application container.
+
+Use the ownership-aware helpers for routine application updates:
+
+```bash
+sitectl wp core update 7.0.2
+sitectl wp plugin update akismet:5.7
+sitectl wp theme update twentytwentyfour:^1.5
+```
+
+These require explicit constraints and invoke `composer require` against the bind-mounted checkout, updating both the manifest and lock. Review and commit those files, then rebuild and deploy. Raw WP-CLI code mutation (`core update`, plugin/theme install, update, or delete) is rejected because it would bypass Composer and disappear on the next container replacement.
 
 Publish a domain, switch HTTP/TLS mode, configure Let's Encrypt, trust upstream proxies, or tune upload limits with the `ingress` component:
 
