@@ -27,7 +27,7 @@ jobs:
       create-definition: ${{ matrix.create_definition }}
       create-args: ${{ matrix.create_args }}
       packages: sitectl sitectl-wp
-      package-versions: sitectl=1.8.1 sitectl-wp=2.0.0
+      package-versions: sitectl=1.8.2 sitectl-wp=2.0.0
       allow-unversioned-packages: false
       run-verify: true
       verify-args: --disposable
